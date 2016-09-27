@@ -1,3 +1,10 @@
+var the = {
+    beautify_in_progress: false,
+    coloring_active: true,
+    autocompletion_active: true,
+    wraptext_active: false
+}
+
 tinyMCEPopup.requireLangPack();
 tinyMCEPopup.onInit.add(_init);
 var cmEditor;
@@ -17,6 +24,9 @@ function _init()
         source_view : true
     });
 
+    // format the source code using JS Beautifier plugin
+    beautify("htmlSource");
+
     var settings = get_settings();
     setup_editor();
     cmActive = true;
@@ -27,6 +37,8 @@ function _init()
     document.getElementById('toggleHighlight').checked = settings.highlight;
     toggle('highlight', document.getElementById('toggleHighlight'));
     resize();
+
+
 }
 
 function save()
@@ -40,7 +52,7 @@ function save()
 function resize()
 {
     var vp = tinyMCEPopup.dom.getViewPort(window);
-    var size = vp.h - 100
+    var size = vp.h - 130
         - document.getElementById('headerContainer').offsetHeight;
         - document.getElementById('mceActionPanel').offsetHeight;
     cmEditor.setSize('100%', size + 'px');
@@ -90,7 +102,7 @@ function setup_editor()
     cmEditor = CodeMirror.fromTextArea(document.getElementById('htmlSource'), {
         mode          : 'text/html',
         width         : '100%',
-        height        : '350px',
+        height        : '450px',
         autofocus     : true,
         lineNumbers   : true,
         matchBrackets : true,
@@ -156,3 +168,31 @@ function supports_html5_storage()
         return false;
     }
 }
+
+
+/**
+ *  JS Beautifier
+ *  ---------------
+ *  ...or, more specifically, all of the code powering jsbeautifier.org.
+ *
+ *
+ *  Written by Einar Lielmanis, <einar@jsbeautifier.org>
+ *
+ *  Thanks to Jason Diamond, Patrick Hof, Nochum Sossonko, Andreas Schneider, Dave
+ *  Vasilevsky, Vital Batmanov, Ron Baldwin, Gabriel Harrison, Chris J. Hull and
+ *  others.
+ */
+function beautify(id) {
+    if (the.beautify_in_progress)
+        return;
+
+    the.beautify_in_progress = true;
+    var source = document.getElementById(id).value.replace(/^\s+/, '');
+    var indent_size = 4;
+    var indent_char = ' ';
+    var brace_style = 'collapse';  // collapse, expand, end-expand
+
+    document.getElementById(id).value = style_html(source, indent_size, indent_char, 120, brace_style);
+    the.beautify_in_progress = false;
+}
+

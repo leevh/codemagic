@@ -54,7 +54,7 @@
 }
 
 a, img, a img { border: none; }
-#headerContainer, #mceActionPanel { overflow-y: auto; }
+/*#headerContainer, #mceActionPanel { overflow-y: auto; }*/
 .nowrap { white-space: nowrap; }
 
 .CodeMirror.cm-s-default { border: 1px solid #bbbbbb; }
